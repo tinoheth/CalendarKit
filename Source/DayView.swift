@@ -6,20 +6,11 @@ public protocol DayViewDelegate: AnyObject {
   func dayViewDidSelectEventView(_ eventView: EventView)
   func dayViewDidLongPressEventView(_ eventView: EventView)
   func dayViewDidLongPressTimelineAtHour(_ hour: Int)
-  func dayView(dayView: DayView, willMoveTo date: Date)
-  func dayView(dayView: DayView, didMoveTo  date: Date)
+  func dayView(dayView: AbstractDayView, willMoveTo date: Date)
+  func dayView(dayView: AbstractDayView, didMoveTo  date: Date)
 }
 
-public class DayView: UIView {
-
-  public weak var dataSource: EventDataSource? {
-    get {
-      return timelinePagerView.dataSource
-    }
-    set(value) {
-      timelinePagerView.dataSource = value
-    }
-  }
+public class AbstractDayView: UIView {
 
   public weak var delegate: DayViewDelegate?
 
@@ -120,7 +111,7 @@ public class DayView: UIView {
   }
 }
 
-extension DayView: EventViewDelegate {
+extension AbstractDayView: EventViewDelegate {
   public func eventViewDidTap(_ eventView: EventView) {
     delegate?.dayViewDidSelectEventView(eventView)
   }
@@ -129,7 +120,7 @@ extension DayView: EventViewDelegate {
   }
 }
 
-extension DayView: TimelinePagerViewDelegate {
+extension AbstractDayView: TimelinePagerViewDelegate {
   public func timelinePagerDidSelectEventView(_ eventView: EventView) {
     delegate?.dayViewDidSelectEventView(eventView)
   }
@@ -147,8 +138,38 @@ extension DayView: TimelinePagerViewDelegate {
   }
 }
 
-extension DayView: TimelineViewDelegate {
+extension AbstractDayView: TimelineViewDelegate {
   public func timelineView(_ timelineView: TimelineView, didLongPressAt hour: Int) {
     delegate?.dayViewDidLongPressTimelineAtHour(hour)
+  }
+}
+
+public class DayView: AbstractDayView {
+  public weak  var  dataSource:  EventDataSource? {
+    didSet {
+      timelinePagerView.trigger =  { [weak  self] in
+        guard let me = self, let dataSource  = me.dataSource  else { return }
+        me.timelinePagerView.processEvents(dataSource.eventsForDate($0.dateOnly()), timeline: $1)
+      }
+    }
+  }
+}
+
+public class AsynchronousDayView: AbstractDayView {
+  public struct EventDate  {
+    public let value: Date
+  }
+
+  public var trigger:  ((EventDate) ->  Void)? {
+    didSet {
+      timelinePagerView.trigger =  { [weak  self] (date, timeline) in
+        guard let me = self, let trigger = me.trigger else { return  }
+        trigger(EventDate(value: date))
+      }
+    }
+  }
+
+  public func  receive(events:  [EventDescriptor], for date: EventDate)  {
+    timelinePagerView.receive(events: events, for: date.value)
   }
 }

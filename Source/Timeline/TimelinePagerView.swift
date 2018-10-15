@@ -12,7 +12,7 @@ public protocol TimelinePagerViewDelegate: AnyObject {
 
 public class TimelinePagerView: UIView {
 
-  public weak var dataSource: EventDataSource?
+  var trigger: ((Date, TimelineView) -> Void)?
   public weak var delegate: TimelinePagerViewDelegate?
 
   public var timelineScrollOffset: CGPoint {
@@ -110,13 +110,20 @@ public class TimelinePagerView: UIView {
   }
 
   func updateTimeline(_ timeline: TimelineView) {
-    guard let dataSource = dataSource else {return}
-    let date = timeline.date.dateOnly()
-    let events = dataSource.eventsForDate(date)
-    let day = TimePeriod(beginning: date,
-                         chunk: TimeChunk.dateComponents(days: 1))
-    let validEvents = events.filter{$0.datePeriod.overlaps(with: day)}
-    timeline.layoutAttributes = validEvents.map(EventLayoutAttributes.init)
+    trigger?(timeline.date, timeline)
+  }
+
+  func processEvents(_ events: [EventDescriptor], timeline: TimelineView) {
+     timeline.layoutAttributes = events.map(EventLayoutAttributes.init)
+  }
+
+  public func receive(events: [EventDescriptor], for date: Date) {
+    timelinePager.reusableViews.forEach{ timelineContainer in
+        let timeline = timelineContainer.timeline
+        if timeline.date == date {
+            processEvents(events, timeline: timeline)
+        }
+    }
   }
 }
 

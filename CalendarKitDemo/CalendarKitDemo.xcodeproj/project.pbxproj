@@ -126,7 +126,7 @@
 				TargetAttributes = {
 					793B14D91BD6815D00961414 = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = 8U3L6K9JA6;
+						DevelopmentTeam = HS8MB2534F;
 						LastSwiftMigration = 0900;
 					};
 				};
@@ -329,7 +329,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 8U3L6K9JA6;
+				DEVELOPMENT_TEAM = HS8MB2534F;
 				INFOPLIST_FILE = CalendarKitDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -346,7 +346,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 8U3L6K9JA6;
+				DEVELOPMENT_TEAM = HS8MB2534F;
 				INFOPLIST_FILE = CalendarKitDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
