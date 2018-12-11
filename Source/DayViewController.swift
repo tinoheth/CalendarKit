@@ -16,7 +16,6 @@ open class AbstractDayViewController: UIViewController, DayViewDelegate {
   override open func viewDidLoad() {
     super.viewDidLoad()
     edgesForExtendedLayout = []
-    view.tintColor = UIColor.red
     dayView.delegate = self
     dayView.reloadData()
 
