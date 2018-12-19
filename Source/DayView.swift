@@ -41,6 +41,14 @@ public class AbstractDayView: UIView {
 
   let dayHeaderView = DayHeaderView()
   let timelinePagerView = TimelinePagerView()
+  public var cornerView: UIView {
+    get {
+      return dayHeaderView.cornerView
+    }
+    set(value) {
+      dayHeaderView.cornerView = value
+    }
+  }
 
   public var state: DayViewState? {
     didSet {

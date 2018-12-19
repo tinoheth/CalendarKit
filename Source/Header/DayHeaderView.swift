@@ -25,6 +25,8 @@ public class DayHeaderView: UIView {
   var pagingScrollViewHeight: CGFloat = 40
   var swipeLabelViewHeight: CGFloat = 20
 
+  var cornerView = UIView(frame: CGRect(x: 0, y: 0, width: 50, height: 0))
+
   lazy var daySymbolsView: DaySymbolsView = DaySymbolsView(daysInWeek: self.daysInWeek)
   let pagingScrollView = PagingScrollView<DaySelector>()
   lazy var swipeLabelView: SwipeLabelView = SwipeLabelView()
@@ -42,7 +44,7 @@ public class DayHeaderView: UIView {
   }
 
   func configure() {
-    [daySymbolsView, pagingScrollView, swipeLabelView].forEach {
+    [cornerView, daySymbolsView, pagingScrollView, swipeLabelView].forEach {
       addSubview($0)
     }
     pagingScrollView.viewDelegate = self
@@ -82,10 +84,14 @@ public class DayHeaderView: UIView {
 
   override public func layoutSubviews() {
     super.layoutSubviews()
-    pagingScrollView.contentOffset = CGPoint(x: bounds.width, y: 0)
-    pagingScrollView.contentSize = CGSize(width: bounds.size.width * CGFloat(pagingScrollView.reusableViews.count), height: 0)
-    daySymbolsView.anchorAndFillEdge(.top, xPad: 0, yPad: 0, otherSize: daySymbolsViewHeight)
-    pagingScrollView.alignAndFillWidth(align: .underCentered, relativeTo: daySymbolsView, padding: 0, height: pagingScrollViewHeight)
+    let space = bounds.width - cornerView.width
+    cornerView.anchorInCorner(.topLeft, xPad: 0, yPad: 0, width: cornerView.width, height: daySymbolsViewHeight + pagingScrollViewHeight)
+    pagingScrollView.contentOffset = CGPoint(x: space, y: 0)
+    pagingScrollView.contentSize = CGSize(width: space * CGFloat(pagingScrollView.reusableViews.count), height: 0)
+    //daySymbolsView.anchorAndFillEdge(.top, xPad: 0, yPad: 0, otherSize: daySymbolsViewHeight)
+    daySymbolsView.alignAndFillWidth(align: .toTheRightMatchingTop, relativeTo: cornerView, padding: 0, height: daySymbolsViewHeight)
+    pagingScrollView.alignAndFillWidth(align: .toTheRightMatchingBottom, relativeTo: cornerView, padding: 0, height: pagingScrollViewHeight)
+//    pagingScrollView.alignAndFillWidth(align: .underCentered, relativeTo: daySymbolsView, padding: 0, height: pagingScrollViewHeight)
     swipeLabelView.anchorAndFillEdge(.bottom, xPad: 0, yPad: 10, otherSize: swipeLabelViewHeight)
   }
 
